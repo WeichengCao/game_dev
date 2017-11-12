@@ -68,6 +68,7 @@ end
 skynet.start(function()
     global.oDictatorObj = dictator.NewDictatorObj()
     interactive.dispatch_logic(logiccmd)
+    global.oDictatorObj:RegisterService("dictator", skynet.self())
 
     local iPort = skynet.getenv("dictator_port") or 7002
     local fd = socket.listen("127.0.0.1", iPort)
