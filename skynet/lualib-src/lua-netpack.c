@@ -462,6 +462,18 @@ ltostring(lua_State *L) {
 	return 1;
 }
 
+static int
+ltostring2(lua_State *L) {
+	void * ptr = lua_touserdata(L, 1);
+	int size = luaL_checkinteger(L, 2);
+	if (ptr == NULL) {
+		lua_pushliteral(L, "");
+	} else {
+		lua_pushlstring(L, (const char *)ptr, size);
+	}
+	return 1;
+}
+
 int
 luaopen_netpack(lua_State *L) {
 	luaL_checkversion(L);
@@ -470,6 +482,7 @@ luaopen_netpack(lua_State *L) {
 		{ "pack", lpack },
 		{ "clear", lclear },
 		{ "tostring", ltostring },
+		{ "tostring2", ltostring2 },
 		{ NULL, NULL },
 	};
 	luaL_newlib(L,l);

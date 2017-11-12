@@ -128,3 +128,13 @@ git clone https://github.com/google/protobuf.git
 式和pbc/binding下介绍的一致,只是我们将protobuff.lua文件放到了game_dev/lualib/base下,这样
 我们就可以直接require "base.protobuf" 使用它
 
+<br> 在这个游戏框架中，我将协议放到了proto/下， proto/base.proto 用于放置各个协议通用数据
+结构，proto/server/*.proto 下放置的是服务端下行协议，统一命名方式是GS2CXXXX， 
+proto/client/*.proto 下放置的是客户端上行协议,统一命名方式是C2GSXXXX。通过shell/make_proto.sh
+进行协议的编译，编译结果为proto/proto.pb文件
+<br> 在游戏启动的时候，我们通过在lualib/base/preload中调用了netfind.Init进行了协议的初始化, 
+这样我们就可以在游戏中使用protobuf.encode protobuf.decode进行协议的编码，解码操作。
+<br> proto/netdefines.lua 的作用是定义了各个交互协议的协议号，我们在客服务端交互的时候需要将
+每个协议的协议号打包进数据流，客户端和服务端使用同一套标准，在收包的时候通过解指定位置得到
+协议名，然后可以使用protobuf.decode 进行相关解析操作，最终得到我们发送的数据, 相关内容位于：
+lualib/base/net.lua 和 lualib/base/netfind.lua 两个文件下
