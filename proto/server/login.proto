@@ -1,0 +1,5 @@
+syntax = "proto2";
+
+message GS2CHello {
+    optional uint32 uid = 1;
+}

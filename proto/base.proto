@@ -1,0 +1,5 @@
+syntax = "proto2";
+
+message GS2CSendMessage {
+    optional string msg = 1;
+}

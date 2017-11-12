@@ -1,0 +1,6 @@
+syntax = "proto2";
+
+message GS2CWarStart {
+    optional uint32 war_id = 1;
+    optional uint32 type = 2;
+}

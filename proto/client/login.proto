@@ -1,0 +1,5 @@
+syntax = "proto2";
+
+message C2GSLogin {
+    optional string account = 1;
+}

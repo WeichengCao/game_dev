@@ -138,3 +138,13 @@ proto/client/*.proto 下放置的是客户端上行协议,统一命名方式是C
 每个协议的协议号打包进数据流，客户端和服务端使用同一套标准，在收包的时候通过解指定位置得到
 协议名，然后可以使用protobuf.decode 进行相关解析操作，最终得到我们发送的数据, 相关内容位于：
 lualib/base/net.lua 和 lualib/base/netfind.lua 两个文件下
+
+## 9.收发包流程 以及模拟客户端操作
+<br> 服务端在收到客户端模拟建立连接的时候, gate收到请求会生成一个固定格式的字符串并用PTYPE_TEXT
+格式将msg发送给给注册进行来的watch_dog; 详见：skynet/service-src/service_gate.c的_report函数。
+watch_dog 收到协议后可以解析出协议，端口，fd等相关信息，并对这些信息进行保留，用以回发数据,
+skynet 也支持了对协议处理设置代理，让协议数据的处理转发到另外的服务中去处理。我们在设置好代理
+并建立了连接后，就可以开始了通信。目前我写了一个简单的交互例子，
+<br> 服务端代码位于service/login下， 客户端代码位于tool/下
+<br> 操作步骤：[1]-启动好服务器后，[2]-使用./shell/client.sh 启动客户端脚本
+

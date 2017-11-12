@@ -1,8 +1,9 @@
 
 MY_ADDR = ...
 
-local skynet = require "skynet"
 require "base.tableop"
+local skynet = require "skynet"
+
 
 print = function(...)
     local info_list = table.pack(...)
@@ -54,3 +55,5 @@ lualib_path = function(dotfile)
 end
 
 require "base.reload"
+local netfind = require "base.netfind"
+netfind.Init()
