@@ -129,8 +129,8 @@ git clone https://github.com/google/protobuf.git
 我们就可以直接require "base.protobuf" 使用它
 
 <br> 在这个游戏框架中，我将协议放到了proto/下， proto/base.proto 用于放置各个协议通用数据
-结构，proto/server/*.proto 下放置的是服务端下行协议，统一命名方式是GS2CXXXX， 
-proto/client/*.proto 下放置的是客户端上行协议,统一命名方式是C2GSXXXX。通过shell/make_proto.sh
+结构，proto/server/x.proto 下放置的是服务端下行协议，统一命名方式是GS2CXXXX， 
+proto/client/x.proto 下放置的是客户端上行协议,统一命名方式是C2GSXXXX。通过shell/make_proto.sh
 进行协议的编译，编译结果为proto/proto.pb文件
 <br> 在游戏启动的时候，我们通过在lualib/base/preload中调用了netfind.Init进行了协议的初始化, 
 这样我们就可以在游戏中使用protobuf.encode protobuf.decode进行协议的编码，解码操作。
