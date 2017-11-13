@@ -510,6 +510,16 @@ function M.enum_id(enum_type, enum_name)
 	return c._env_enum_id(P, enum_type, enum_name)
 end
 
+--key, val 格式的message
+function M.name_field(typename)
+    return c._field_by_name(P, typename)
+end
+
+--val, key 格式的message
+function M.id_field(typename)
+    return c._field_by_id(P, typename)
+end
+
 function M.extract(tbl)
     local typename = rawget(tbl , 1)
     local buffer = rawget(tbl , 2)

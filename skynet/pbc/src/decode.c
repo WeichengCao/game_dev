@@ -347,3 +347,13 @@ pbc_decode(struct pbc_env * env, const char * type_name , struct pbc_slice * sli
 	return ctx->number;
 }
 
+int
+pbc_fields(struct pbc_env * p , const char *name, void (*func)(void *p, void *ud), void *ud) {
+    struct _message * msg = _pbcP_get_message(p , name);
+    if (msg == NULL) {
+		p->lasterror = "Proto not found";
+        return -1;
+    }
+    _pbcM_sp_foreach_ud(msg->name, func, ud);
+    return 0;
+}
