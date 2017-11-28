@@ -13,7 +13,7 @@ function M.open(iAddr, iFd, sData)
 end
 
 function M.close(iAddr, iFd)
-    global.oGateMgr:RemoveConnection(iAddr, iFd)
+    global.oGateMgr:RemoveConnection(iFd)
 end
 
 

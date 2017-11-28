@@ -28,6 +28,7 @@ end
 
 function CGateMgr:Init()
     self.m_mGateObj = {}
+    self.m_mConnObj = {}
 end
 
 function CGateMgr:InitAllGateObj()
@@ -41,26 +42,32 @@ function CGateMgr:AddGateObj(oGate)
 end
 
 function CGateMgr:AddConnection(oConn)
-    local iGateAddr = oConn:GetGateAddr()
-    local oGate = self.m_mGateObj[iGateAddr]
-    if oGate then
-        oGate:AddConnection(oConn)
-    end
+    local iFd = oConn:GetFd()
+    self.m_mConnObj[iFd] = oConn
+    self:OnAddConnection(oConn)
 end
 
-function CGateMgr:GetConnection(iGateAddr, iFd)
-    local oGate = self.m_mGateObj[iGateAddr]
-    if oGate then
-        return oGate:GetConnectionByFd(iFd)
-    end
+function CGateMgr:OnAddConnection(oConn)
+    oConn:Forward()
 end
 
-function CGateMgr:RemoveConnection(iGateAddr, iFd)
-    local oGate = self.m_mGateObj[iGateAddr]
-    if oGate then
-        oGate:RemoveConnection(iFd)
-    end
+function CGateMgr:GetConnection(iFd)
+    return self.m_mConnObj[iFd]
 end
+
+function CGateMgr:RemoveConnection(iFd)
+    local oConn = self.m_mConnObj[iFd]
+    if not oConn then return end
+
+    self.m_mConnObj[iFd] = nil
+    self:OnRemoveConnection(oConn)
+end
+
+function CGateMgr:OnRemoveConnection(oConn)
+    --TODO kick
+end
+
+
 
 
 CGateObj = {}
@@ -77,32 +84,6 @@ end
 function CGateObj:Init(iPort)
     self.m_iAddr = skynet.launch("gate", "S", "."..MY_ADDR, iPort, skynet.PTYPE_SOCKET, 5000)
     self.m_iPort = iPort
-end
-
-function CGateObj:AddConnection(oConn)
-    local iFd = oConn:GetFd()
-    self.m_mConnection[iFd] = oConn
-    self:OnAddConnection(oConn)
-end
-
-function CGateObj:OnAddConnection(oConn)
-    oConn:Forward()
-end
-
-function CGateObj:GetConnectionByFd(iFd)
-    return self.m_mConnection[iFd]
-end
-
-function CGateObj:RemoveConnection(iFd)
-    local oConn = self.m_mConnection[iFd]
-    if not oConn then return end
-
-    self.m_mConnection[iFd] = nil
-    self:OnRemoveConnection(oConn)
-end
-
-function CGateObj:OnRemoveConnection(oConn)
-    --TODO kick
 end
 
 
@@ -135,11 +116,18 @@ function CConnection:Forward()
 	skynet.send(self.m_iGateAddr, "text", "forward", self.m_iFd, skynet.address(skynet:self()), skynet.address(self.m_iGateAddr));
     skynet.send(self.m_iGateAddr, "text", "start", self.m_iFd)
 
-    local func
-    func = function()
-        net.Send(self:MailAddr(), "GS2CHello", {uid=5})
-        skynet.timeout(1000, func)
-    end
-    func()
+    net.Send(self:MailAddr(), "GS2CHello", {})
+end
+
+function CConnection:Login(sAccount, sPwd, iPid)
+    --TODO veritify
+    local mRole = {
+        account = sAccount, 
+        pwd = sPwd,
+        addr = self.m_iGateAddr,
+        fd = self.m_iFd,
+        port = self.m_iPort,
+    }
+    interactive.send(".world", "login", "LoginPlayer", {pid = iPid, role = mRole})
 end
 
