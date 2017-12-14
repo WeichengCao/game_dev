@@ -38,7 +38,7 @@ function reload(dotfile)
             end
         end
         for k, v in pairs(old) do
-            if not visited[k] and not new[k] then
+            if not visited[k] and not rawget(new, k) then
                 visited[k] = true
                 old[k] = nil
             end
