@@ -1,3 +1,20 @@
+function table_key_list(tbl)
+    local l = {}
+    for k, v in pairs(tbl) do
+        table.insert(l, k)
+    end
+    return l
+end
+
+function table_value_list(tbl)
+    local l = {}
+    for k, v in pairs(tbl) do
+        table.insert(l, v)
+    end
+    return l
+end
+
+
 function table_copy(tbl)
     local res = {}
     for k, v in pairs(tbl) do
