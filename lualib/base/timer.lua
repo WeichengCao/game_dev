@@ -63,11 +63,6 @@ end
 
 local M = {}
 
-M.Init = function()
-    oTimerMgr = CTimerMgr:New()
-    oTimerMgr:CheckUpdate()
-end
-
 M.NewTimer = function()
     return CTimer:New()
 end
