@@ -1,5 +1,5 @@
 package.cpath = package.cpath..";./skynet/luaclib/?.so;".."./skynet/cservice/?.so"
-package.path = package.path..";./lualib/?.lua;".."./skynet/lualib/?.lua"
+package.path = package.path..";./lualib/?.lua;".."./skynet/lualib/?.lua;".."./tools/?.lua"
 
 --local skynet = require "skynet"
 require "base.tableop"
@@ -7,75 +7,173 @@ local socket = require "clientsocket"
 local protobuf = require "base.protobuf"
 local netpack = require "netpack"
 local netfind = require "base.netfind"
-
 netfind.Init()
 
 
+function loadfile_ex(file_name, mode, env)
+    mode = mode or "rb"
+    local fp = io.open(file_name, mode)
+    local data = fp:read("a")
+    fp:close()
+    local f, s = load(data, file_name, "bt", env)
+    assert(f, s)
+    return f
+end
 
-CRobot = {}
-CRobot.__index = CRobot
+trace_msg = function(msg)
+    print(debug.traceback("=====" .. msg .. "====="))
+end
 
-function CRobot:New(sIp, iPort)
+safe_call = function(func, ...)
+    xpcall(func, trace_msg, ...)
+end
+
+
+robot = {}
+robot.__index = robot
+
+function robot:new(ip, port)
     local o = setmetatable({}, self)
-    o.m_sIp = sIp
-    o.m_iPort = iPort
-    o.m_bRuning = true
-    o.m_iFd = socket.connect(sIp, iPort)
+    o.ip = ip
+    o.port = port
+    o.runing = true
+    o.fd = socket.connect(ip, port)
+    o.coroutines = {}
+    o.last = ""
+    o.server_proto_handle = {}
     return o
 end
 
-function CRobot:Start()
-    self:CheckSocketIO()
-end
-
-function CRobot:CheckSocketIO()
-    pcall(function()
-        self:CheckReceiveMsg()
-        --self:CheckSendMsg()
-        coroutine.yield()
+function robot:fork(func, ...)
+    local args = {...}
+    local co = coroutine.create(function()
+        safe_call(func, table.unpack(args))
     end)
+    table.insert(self.coroutines, co)
 end
 
-function CRobot:CheckReceiveMsg()
-    local msg = socket.recv(self.m_iFd)
-    if msg then
-        local sData, sz = string.unpack(">s2", msg)
-        local iSize = sz - 3
-        local iProto = 0
-        for i = 1, 2 do
-            iProto = iProto | string.byte(sData, i, i) << 8*(i-1)
+function robot:run_script(client_script)
+    print("run_script:"..client_script)
+    local m = setmetatable({client = self}, {__index = _G})
+    local f = loadfile_ex(client_script, "rb", m)
+    safe_call(f)
+end
+
+function robot:start()
+    while true do
+        self:check_socket_io()
+
+        local dead_list = {}
+        for idx, co in ipairs(self.coroutines) do
+            if coroutine.status(co) == "dead" then
+                table.insert(dead_list, idx)
+            end
         end
-        local sMod, sMessage = table.unpack(netfind.FindGS2CProtoByIndex(iProto))
-        tab = protobuf.decode(sMessage, string.sub(sData, 3, iSize))
-        print("receive:", sMessage, table_serialize(tab))
-
-        self:TestSend()
+        for i = #dead_list, 1, -1 do
+            table.remove(self.coroutines, dead_list[i])
+        end
+        for idx, co in ipairs(self.coroutines) do
+            coroutine.resume(co)
+        end
+        coroutine.yield()
     end
 end
 
-function CRobot:TestSend()
-    local sNet = self:PackData("C2GSLogin", {account="text"})
-    socket.send(self.m_iFd, sNet)
+function robot:check_socket_io()
+    local func = function()
+        self:check_receive_msg()
+        self:check_client_console()
+    end
+    safe_call(func)
 end
 
-function CRobot:PackData(sMessage, mData)
-    local sData = protobuf.encode(sMessage, mData)
-    local iProto = netfind.FindC2GSProtoByName(sMessage)
-    assert(iProto, "can't find message"..sMessage)
+function robot:check_receive_msg()
+    while true do
+        local buff = self:recv_package()
+        if not buff then
+            break
+        end
+        local cmd, args = self:s2c_unpack_buff(buff)
+        print("receive_msg", cmd, table_serialize(args))
+        local func = self.server_proto_handle[cmd]
+        if func then
+            safe_call(func, self, args)
+        end
+    end
+end
 
-    local lProto = {}
+function robot:recv_package()
+    local result
+    result, self.last = self:unpack_package(self.last)
+    if result then
+        return result
+    end
+    local r = socket.recv(self.fd)
+    if not r then
+        return nil
+    end
+    if r == "" then
+        print("Server closed")
+    end
+    print(r)
+    result, self.last = self:unpack_package(self.last .. r)
+    return result
+end
+
+function robot:unpack_package(text)
+	local size = #text
+	if size < 2 then
+		return nil, text
+	end
+	local s = text:byte(1) * 256 + text:byte(2)
+	if size < s+2 then
+		return nil, text
+	end
+
+	return text:sub(3,2+s), text:sub(3+s)
+end
+
+function robot:s2c_unpack_buff(buff)
+    local proto_no = 0
     for i = 1, 2 do
-        table.insert(lProto, string.char(iProto % 256))
-        iProto = iProto >> 8
+        proto_no = proto_no | string.byte(buff, i, i) << 8*(i-1)
     end
-    table.insert(lProto, sData)
-
---    local sData = table.concat(lProto, "")
---    for i = 1, #sData do
---        print(i, string.byte(sData, i, i))
---    end
-    return string.pack(">s2", sData)
-    --return sData
+    local mod, message = table.unpack(netfind.FindGS2CProtoByIndex(proto_no))
+    proto = protobuf.decode(message, string.sub(buff, 3))
+    return message, proto
 end
 
+function robot:check_client_console()
+    local msg = socket.readstdin()
+    local cmd, args = self:parsecmd(msg)
+    if cmd and args and type(args) == "table" then
+        self:run_cmd(cmd, args)
+    end
+end
+
+function robot:parsecmd(msg)
+    --format:C2GSRunCmd {cmd = 'login'}
+    local cmd = string.match(msg, "%w+")
+    local args = string.sub(msg, #cmd+2, #msg)
+    print("msg", msg)
+end
+
+function robot:run_cmd(cmd, args)
+    local buff = self:c2s_package(cmd, args)
+    socket.send(self.fd, buff)
+end
+
+function robot:c2s_package(message, data)
+    local buff = protobuf.encode(message, data)
+    local proto = netfind.FindC2GSProtoByName(message)
+    assert(proto, "can't find message"..message)
+
+    local proto_list = {}
+    for i = 1, 2 do
+        table.insert(proto_list, string.char(proto % 256))
+        proto = proto >> 8
+    end
+    table.insert(proto_list, buff)
+    return string.pack(">s2", table.concat(proto_list, ""))
+end
 
