@@ -31,7 +31,11 @@ function M.dispatch_net(m)
 
     skynet.dispatch("gate", function(session, source, msg, sz)
         local sData = netpack.tostring2(msg, sz)
-        local sProto = string.sub(sData, 1, 2)
+        local fd = 0
+        for i = 1, 4 do
+            fd = fd | string.byte(string.sub(sData, i, i)) << 8*(i-1)
+        end
+        local sProto = string.sub(sData, 5, 6)
         local iProto = 0
         for i = 1, 2 do
             iProto = iProto | string.byte(string.sub(sProto, i, i)) << 8*(i-1)
@@ -39,7 +43,7 @@ function M.dispatch_net(m)
         local sMod, sMsg = table.unpack(netfind.FindC2GSProtoByIndex(iProto))
         assert(sMod and sMsg, "error proto mod:"..sMod..",msg:"..sMsg..",proto:"..iProto)
 
-        local sData = string.sub(sData, 3, sz)
+        local sData = string.sub(sData, 7, sz)
         local mData = protobuf.decode(sMsg, sData)
 
         safe_call(netcmd.Invoke, sMod, sMsg, fd, mData)

@@ -1,4 +1,5 @@
 local skynet = require "skynet"
+local global = require "global"
 
 local mCmd = {}
 mCmd.login = import(service_path("netcmd.login"))

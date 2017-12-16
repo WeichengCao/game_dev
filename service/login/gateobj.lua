@@ -1,6 +1,7 @@
 local skynet = require "skynet.manager"
 local global = require "global"
 local net = require "base.net"
+local interactive = require "base.interactive"
 local baseobj = import(lualib_path("base.baseobj"))
 
 

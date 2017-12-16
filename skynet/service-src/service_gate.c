@@ -175,9 +175,15 @@ _forward(struct gate *g, struct connection * c, int size) {
 		return;
 	}
 	if (c->agent) {
-		void * temp = skynet_malloc(size);
-		databuffer_read(&c->buffer,&g->mp,temp, size);
-		skynet_send(ctx, c->client, c->agent, g->client_tag | PTYPE_TAG_DONTCOPY, 0 , temp, size);
+		void * temp = skynet_malloc(size+4);
+        char fd[4];
+        fd[0] = (char)(c->id & 0xff);
+        fd[1] = (char)(c->id>>8 & 0xff);
+        fd[2] = (char)(c->id>>16 & 0xff);
+        fd[3] = (char)(c->id>>24 & 0xff);
+        memcpy(temp, fd, 4);
+		databuffer_read(&c->buffer, &g->mp, temp+4, size);
+		skynet_send(ctx, c->client, c->agent, g->client_tag | PTYPE_TAG_DONTCOPY, 0 , temp, size+4);
 	} else if (g->watchdog) {
 		char * tmp = skynet_malloc(size + 32);
 		int n = snprintf(tmp,32,"%d data ",c->id);
