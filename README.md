@@ -148,3 +148,9 @@ skynet 也支持了对协议处理设置代理，让协议数据的处理转发�
 <br> 服务端代码位于service/login下， 客户端代码位于tool/下
 <br> 操作步骤：[1]-启动好服务器后，[2]-使用./shell/client.sh 启动客户端脚本
 
+## 10.关于baseobj的计时器
+<br> 游戏服务器中常用的计时器功能直接封装了skynet.timeout函数，提供了三个接口供游戏使用，分
+别是：AddTimeCb：用于添加计时器，DelTimeCb：删除计时器，GetTimeCb：获取计时器，通过这三个接
+口可以灵活的实现游戏逻辑功能。代码实现看lualib/base/timer.lua
+
+
