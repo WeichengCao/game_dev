@@ -57,4 +57,5 @@ end
 require "base.reload"
 local netfind = require "base.netfind"
 netfind.Init()
-
+local savemgr = require "base.savemgr"
+savemgr:Init()
