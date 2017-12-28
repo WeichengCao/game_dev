@@ -1,3 +1,4 @@
+
 function table_key_list(tbl)
     local l = {}
     for k, v in pairs(tbl) do
@@ -14,7 +15,6 @@ function table_value_list(tbl)
     return l
 end
 
-
 function table_copy(tbl)
     local res = {}
     for k, v in pairs(tbl) do
@@ -23,9 +23,19 @@ function table_copy(tbl)
     return res
 end
 
-function table_deep_copy(tbl)
-    --TODO
-    return tbl
+function table_deep_copy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == "table" then
+        copy = {}
+        for orig_key, orig_val in next, orig, nil do
+            copy[table_deep_copy(orig_key)] = table_deep_copy(orig_val)
+        end
+        setmetatable(copy, table_deep_copy(getmetatable(orig)))
+    else
+        copy = orig
+    end
+    return copy
 end
 
 function table_serialize(tbl, visited)
@@ -51,4 +61,10 @@ function table_serialize(tbl, visited)
     end
     con = con .. "}"
     return con
+end
+
+function list_combine(l1, l2)
+    for _, val in ipairs(l2) do
+        l1[#l1+1] = val
+    end
 end

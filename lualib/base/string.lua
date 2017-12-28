@@ -38,3 +38,19 @@ function split(str, sep, plain)
     return res
 end
 
+function trim(s)
+  return s:match'^%s*(.*%S)%s*$' or ''
+end
+
+function replace_vars(str, vars)
+    --replace_var("hello {name}", {name="world"})
+    if not vars then
+        vars = str
+        str = vars[1]
+    end
+    return (string_gsub(str, "({([^}]+)})",
+        function(whole,i)
+            return vars[i] or whole
+        end))
+end
+
