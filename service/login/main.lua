@@ -1,10 +1,9 @@
---
 local skynet = require "skynet.manager"
 local interactive = require "base.interactive"
 local net = require "base.net"
 local global = require "global"
 local texthandle = require "base.texthandle"
---local logiccmd = import(service_path("logiccmd.init"))
+local logiccmd = import(service_path("logiccmd.init"))
 local netcmd = import(service_path("netcmd.init"))
 local textcmd = import(service_path("textcmd.init"))
 local gateobj = import(service_path("gateobj"))

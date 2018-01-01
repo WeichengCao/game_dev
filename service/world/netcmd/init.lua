@@ -9,3 +9,5 @@ function M.Invoke(sMod, sMsg, fd, mData)
     end
     M[sMod][sMsg](fd, mData)
 end
+
+return M

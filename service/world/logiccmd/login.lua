@@ -8,6 +8,5 @@ end
 
 function KickConnection(mRecord, mData)
     local iFd = mData.fd
-    --TODO
-    print("KickConnectoin", iFd)
+    global.oConnMgr:DelConnectionByFd(iFd)
 end

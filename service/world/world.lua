@@ -1,4 +1,5 @@
 local skynet = require "skynet"
+local global = require "global"
 local baseobj = import(lualib_path("base.baseobj"))
 local connection = import(service_path("connection"))
 
@@ -14,7 +15,6 @@ function CWorldMgr:New(...)
     local o = super(CWorldMgr).New(self)
     o.m_mOnlinePlayers = {}
     o.m_mLoginPlayers = {}
-    o.m_mConnections = {}
     return o
 end
 
@@ -28,7 +28,7 @@ function CWorldMgr:LoginPlayer(iPid, mRole)
         --TODO reenter
     else
         local oConn = self:CreateConnection(mRole)
-        self:AddConnection(iPid, oConn)
+        global.oConnMgr:AddConnection(iPid, oConn)
 
         --TODO create playerobj
         --TODO load playerdata
