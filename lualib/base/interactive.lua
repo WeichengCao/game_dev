@@ -31,7 +31,7 @@ function M.dispatch_logic(m)
 
     skynet.dispatch("logic", function(session, source, record, args)
         if record.type == "response" then
-            local session_idx = args.session
+            local session_idx = record.session
             local callback = session_keep[session_idx]
             assert(callback)
             safe_call(callback, record, args)
@@ -73,7 +73,7 @@ function M.request(addr, module, func, args, callback)
 end
 
 function M.respond(addr, session_idx, args)
-    local package = {
+    local record = {
         session = session_idx,
         type = "response",
         source = "."..MY_ADDR,

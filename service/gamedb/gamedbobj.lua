@@ -32,12 +32,24 @@ function CGameDb:Insert(sTable, mInsert)
     --Insert("player", {account="xterm"})
     local obj = self:GetDb()
     obj[sTable]:safe_insert(mInsert)
+    
+    local mErr = obj[sTable].database:runCommand("getLastError")
+    if mErr and mErr.err and mErr.code then
+        print("insert err:" .. sTable, mInsert, mErr.err)
+        return false
+    end
+    return true
 end
 
 function CGameDb:Update(sTable, mCond, mUpdate, bUpsert, bMulti)
     --Update("player, {account="xterm"}, {account="xteam", age=17}, true, false)
     local obj = self:GetDb()
     obj[sTable]:update(mCond, mUpdate, bUpsert, bMulti)
+    
+    local mErr = obj[sTable].database:runCommand("getLastError")
+    if mErr and mErr.err and mErr.code then
+        print("insert err:" .. sTable, mCond, mUpdate, mErr.err)
+    end
 end
 
 function CGameDb:Delete(sTable, mCond, bSingle)

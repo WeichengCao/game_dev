@@ -14,6 +14,9 @@ skynet.start(function()
     global.oGameDb = gamedb.NewGameDbObj(mConfig, "game")
 
     --TODO ensure index
+    global.oGameDb:EnsureIndex("account", {account=1}, {unique=true, name="account_index"})
+    global.oGameDb:EnsureIndex("player", {pid=1}, {unique=true, name="pid_index"})
+    global.oGameDb:EnsureIndex("player", {name=1}, {unique=true, name="name_index"})
 
     skynet.register(".gamedb")
     interactive.send(".dictator", "common", "RegisterService", {

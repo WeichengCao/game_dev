@@ -1,5 +1,0 @@
-syntax = "proto2";
-
-message C2GSWarStart {
-    optional uint32 war_id = 1;
-}

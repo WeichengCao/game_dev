@@ -9,16 +9,24 @@ local GS2CIndex2Proto = {}
 --------------------
 local C2GSDefines = {}
 
+--C2GSStart--
 C2GSDefines.login = {
-    C2GSLogin = 1002,
+    C2GSSelectRole = 1001,
+    C2GSCreateRole = 1000,
+    C2GSLoginAccount = 1002,
 }
+--C2GSEnd--
 
 
 local GS2CDefines = {}
 
+--GS2CStart--
 GS2CDefines.login = {
+    GS2CSelectRole = 1000,
     GS2CHello = 1001,
+    GS2CLoginError = 1002,
 }
+--GS2CEnd--
 ---------------------
 
 

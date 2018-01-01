@@ -1,10 +1,8 @@
 
 local mCmd = {}
 
-mCmd.testdb = import(service_path("logiccmd.testdb"))
-mCmd.accountdb = import(service_path("logiccmd.accountdb"))
-mCmd.idsupplydb = import(service_path("logiccmd.idsupplydb"))
-mCmd.playerdb = import(service_path("logiccmd.playerdb"))
+mCmd.common = import(service_path("logiccmd.common"))
+
 
 function Invoke(sModule, sFunc, ...)
     if not mCmd[sModule] then

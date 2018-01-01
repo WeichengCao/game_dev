@@ -10,6 +10,20 @@ local netpack = require "netpack"
 local netfind = require "base.netfind"
 netfind.Init()
 
+tprint = function(...)
+    local info_list = table.pack(...)
+    local ret_list = {}
+    for i = 1, #info_list do
+        if info_list[i] == "nil" then
+            table.insert(ret_list, "nil")
+        elseif type(info_list[i]) == "table" then
+            table.insert(ret_list, table_serialize(info_list[i]))
+        else
+            table.insert(ret_list, info_list[i])
+        end
+    end
+    print(table.unpack(ret_list))
+end
 
 function loadfile_ex(file_name, mode, env)
     mode = mode or "rb"
@@ -61,8 +75,9 @@ function robot:run_script(client_script)
 end
 
 function robot:start()
+    self:fork(self.check_socket_io, self)
     while true do
-        self:check_socket_io()
+        --self:check_socket_io()
 
         local dead_list = {}
         for idx, co in ipairs(self.coroutines) do
@@ -85,7 +100,10 @@ function robot:check_socket_io()
         self:check_receive_msg()
         self:check_client_console()
     end
-    safe_call(func)
+    while self.runing do
+        safe_call(func)
+        coroutine.yield()
+    end
 end
 
 function robot:check_receive_msg()
@@ -115,6 +133,7 @@ function robot:recv_package()
     end
     if r == "" then
         print("Server closed")
+        os.exit()
     end
     print(r)
     result, self.last = self:unpack_package(self.last .. r)

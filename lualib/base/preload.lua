@@ -55,6 +55,8 @@ lualib_path = function(dotfile)
 end
 
 require "base.reload"
+require "base.timeop"
+require "base.stringop"
 local netfind = require "base.netfind"
 netfind.Init()
 local savemgr = require "base.savemgr"
