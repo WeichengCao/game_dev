@@ -3,6 +3,7 @@ package.path = package.path..";./lualib/?.lua;".."./skynet/lualib/?.lua;".."./to
 
 --local skynet = require "skynet"
 require "base.tableop"
+require "base.stringop"
 local socket = require "clientsocket"
 local protobuf = require "base.protobuf"
 local netpack = require "netpack"
@@ -145,6 +146,8 @@ end
 
 function robot:check_client_console()
     local msg = socket.readstdin()
+    if not msg then return end
+
     local cmd, args = self:parsecmd(msg)
     if cmd and args and type(args) == "table" then
         self:run_cmd(cmd, args)
@@ -155,7 +158,9 @@ function robot:parsecmd(msg)
     --format:C2GSRunCmd {cmd = 'login'}
     local cmd = string.match(msg, "%w+")
     local args = string.sub(msg, #cmd+2, #msg)
-    print("msg", msg)
+   
+    args = formula_string(args, {}) 
+    return cmd, args
 end
 
 function robot:run_cmd(cmd, args)
