@@ -33,6 +33,7 @@ function CConnection:MailAddr()
     return {addr = self.m_iGateAddr, fd = self.m_iFd}
 end
 
+--把world服设置为连接的代理，在world服处理协议包
 function CConnection:Forward()
 	skynet.send(self.m_iGateAddr, "text", "forward", self.m_iFd, skynet.address(skynet:self()), skynet.address(self.m_iGateAddr));
 end

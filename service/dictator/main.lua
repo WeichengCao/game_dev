@@ -54,10 +54,10 @@ function dictator_main_loop(stdin, print_back)
             if cmdline:sub(1, 4) == "GET " then
                 local code, url = httpd.read_request(sockethelper.readfunc(stdin, cmdline.."\n"), 8192)
                 local cmdline = url:sub(2):gsub("/", " ")
-                docmd(cmdline, print_back, stdin)
+                safe_call(docmd, cmdline, print_back, stdin)
                 break
             elseif cmdline ~= "" then
-                docmd(cmdline, print_back, stdin)
+                safe_call(docmd, cmdline, print_back, stdin)
             end
         end
     end)

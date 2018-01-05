@@ -1,5 +1,10 @@
 return {
-    test_data = {1, 2, 3, },
-    test_string = "string",
-    test_number = 123124,
+    grade2exp = {
+        --等级, 经验
+        [1] = 100,
+        [2] = 230,
+        [3] = 400,
+        [4] = 700,
+        [5] = 1000,
+    },
 }

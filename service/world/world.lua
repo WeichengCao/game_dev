@@ -1,7 +1,9 @@
 local skynet = require "skynet"
 local global = require "global"
+local interactive = require "base.interactive"
 local baseobj = import(lualib_path("base.baseobj"))
 local connection = import(service_path("connection"))
+local player = import(service_path("player.playerobj"))
 
 function NewWorldMgr(...)
     return CWorldMgr:New(...)
@@ -13,8 +15,10 @@ inherit(CWorldMgr, baseobj.CBaseObj)
 
 function CWorldMgr:New(...)
     local o = super(CWorldMgr).New(self)
-    o.m_mOnlinePlayers = {}
-    o.m_mLoginPlayers = {}
+    o.m_mOnlinePlayers = {}     --已经登陆的玩家
+    o.m_mLoginPlayers = {}      --登陆中的玩家
+    o.m_iServerGrade = 0        --服务器等级 
+    o.m_iOpenDays = 0           --服务器开放天数
     return o
 end
 
@@ -22,32 +26,78 @@ function CWorldMgr:GetOnlinePlayerByPid(iPid)
     return self.m_mOnlinePlayers[iPid]
 end
 
+function CWorldMgr:GetOnlinePlayerByFd(iFd)
+    local iPid = global.oConnMgr:GetPidByFd(iFd)
+    if not iPid then return end
+    return self:GetOnlinePlayerByPid(iPid)
+end
+
 function CWorldMgr:LoginPlayer(iPid, mRole)
     local oPlayer = self:GetOnlinePlayerByPid(iPid)
     if oPlayer then
-        --TODO reenter
+        local oConn = self:CreateConnection(mRole)
+        global.oConnMgr:AddConnection(iPid, oConn)
+        oPlayer:OnLogin(false)
     else
         local oConn = self:CreateConnection(mRole)
         global.oConnMgr:AddConnection(iPid, oConn)
 
-        --TODO create playerobj
-        --TODO load playerdata
-        --TODO notify client login success
+        local oPlayer = self:CreatePlayer(iPid)
+        self.m_mLoginPlayers[iPid] = oPlayer
+       
+        interactive.request(".gamedb", "playerdb", "LoadOnlineCtrl", {pid = iPid},
+        function(mRecord, mData)
+            global.oWorldMgr:LoadPlayerCb(iPid, mData)
+        end)
     end
-end
-
-function CWorldMgr:CreatePlayer(iPid)
 end
 
 function CWorldMgr:CreateConnection(mRole)
     return connection.NewConnection(mRole)
 end
 
-function CWorldMgr:AddConnection(iPid, oConn)
-    local oOld = self.m_mConnections[iPid]
-    if oOld then
-        --TODO kick old connection
+function CWorldMgr:CreatePlayer(iPid, mRole)
+    local oPlayer = player.NewPlayerObj(iPid, mRole)
+    return oPlayer
+end
+
+function CWorldMgr:LoadPlayerCb(iPid, mData)
+    local oPlayer = self.m_mLoginPlayers[iPid]
+    assert(oPlayer and oPlayer[sCtrl])
+
+    if not mData then return end
+
+    local lCtrl2LoadCb = {
+        {"m_oBaseCtrl", "basectrl",},
+        {"m_oActiveCtrl", "activectrl",},
+        {"m_oItemCtrl", "itemctrl",},
+        {"m_oTaskCtrl", "taskctrl",},
+        {"m_oSummCtrl", "summctrl",},
+        {"m_oSkillCtrl", "skillctrl",},
+        {"m_oWieldCtrl", "wieldctrl",},
+        {"m_oTodayCtrl", "todayctrl",},
+        {"m_oWeekCtrl", "weekctrl",},
+        {"m_oMonthCtrl", "monthctrl",},
+        {"m_oTempCtrl", "tempctrl",},
+    }
+
+    for _, mInfo in ipairs(lCtrl2LoadCb) do
+        local sCtrl, sKey = table.unpack(mInfo)
+        safe_call(oPlayer[sCtrl].Load, oPlayer[sCtrl], mData["data"][sKey])
     end
-    self.m_mConnections[iPid] = oConn
-    oConn:Forward()
+    oPlayer:SetName(mData["data"]["name"])
+
+    self:LoadPlayerFinish(iPid)
+end
+
+function CWorldMgr:LoadOfflineBlock(iPid, iIdx)
+    --TODO
+end
+
+function CWorldMgr:LoadPlayerFinish(iPid)
+    local oPlayer = self.m_mLoginPlayers[iPid]
+    self.m_mOnlinePlayers[iPid] = oPlayer
+    self.m_mLoginPlayers[iPid] = nil
+    oPlayer:LoadFinish()
+    oPlayer:OnLogin(true)
 end

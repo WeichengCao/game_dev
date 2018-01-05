@@ -82,6 +82,16 @@ function CDataCtrl:UnDirty()
     self.m_bDirty = false
 end
 
+function CDataCtrl:CheckSaveDb()
+    if self:IsDirty() then
+        self:SaveDb()
+        self:UnDirty()
+    end
+end
+
+function CDataCtrl:SaveDb()
+end
+
 function CDataCtrl:ApplySave(iDelayMin, func)
     assert(not self.m_iSaveId)
     self.m_iSaveId = savemgr.AddSave(iDelayMin, func)
