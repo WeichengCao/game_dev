@@ -1,5 +1,7 @@
 local timer = require "base.timer"
 
+local oSaveMgr = nil
+
 CSaveObj = {}
 CSaveObj.__index = CSaveObj
 
@@ -106,7 +108,6 @@ function CSaveMgr:CheckSave(iSaveId)
 end
 
 
-local oSaveMgr = nil
 local M = {}
 
 function M.Init()

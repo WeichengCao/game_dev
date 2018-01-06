@@ -3,3 +3,14 @@ syntax = "proto2";
 message GS2CSendMessage {
     optional string msg = 1;
 }
+
+message PlayerProp {
+    optional uint64 mask = 1;       //标记哪些字段是有更新
+    optional uint32 pid = 2;        //玩家id
+    optional string name = 3;       //玩家名字
+    optional uint32 exp = 4;        //经验
+    optional uint32 grade = 5;      //等级
+    optional uint32 school = 6;     //门派
+    optional uint32 sex = 7;        //性别
+    optional uint32 icon = 8;       //头像图标
+}

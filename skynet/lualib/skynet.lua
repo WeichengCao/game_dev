@@ -456,6 +456,11 @@ function skynet.fork(func,...)
 	return co
 end
 
+local finish_hook
+function skynet.set_finish_hook(func)
+    finish_hook = func
+end
+
 local function raw_dispatch_message(prototype, msg, sz, session, source)
 	-- skynet.PTYPE_RESPONSE = 1, read skynet.h
 	if prototype == 1 then
@@ -515,6 +520,11 @@ function skynet.dispatch_message(...)
 		end
 	end
 	assert(succ, tostring(err))
+
+    if finish_hook then
+        local hook_succ, hook_err = pcall(finish_hook)
+        assert(hook_succ, tostring(hook_err))
+    end
 end
 
 function skynet.newservice(name, ...)

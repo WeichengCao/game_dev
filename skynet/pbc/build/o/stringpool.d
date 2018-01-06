@@ -1,1 +1,1 @@
-build/o/stringpool.o: src/stringpool.c src/alloc.h
+build/o/stringpool.o: stringpool.c alloc.h

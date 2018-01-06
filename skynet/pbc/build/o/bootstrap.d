@@ -1,3 +1,2 @@
-build/o/bootstrap.o: src/bootstrap.c pbc.h src/map.h src/alloc.h \
- src/context.h src/array.h src/varint.h src/pattern.h src/proto.h \
- src/bootstrap.h src/stringpool.h src/descriptor.pbc.h
+build/o/bootstrap.o: bootstrap.c pbc.h map.h alloc.h context.h array.h \
+ varint.h pattern.h proto.h bootstrap.h stringpool.h descriptor.pbc.h

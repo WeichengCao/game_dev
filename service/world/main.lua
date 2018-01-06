@@ -5,6 +5,7 @@ local net = require "base.net"
 local global = require "global"
 local share = require "base.share"
 local texthandle = require "base.texthandle"
+local hook = require "base.hook"
 local logiccmd = import(service_path("logiccmd.init"))
 local netcmd = import(service_path("netcmd.init"))
 local world = import(service_path("world"))
@@ -24,5 +25,9 @@ skynet.start(function()
         addr = "."..MY_ADDR,
         inst = skynet.self(),
     })
+
+    hook.set_logic_func(function()
+        global.oWorldMgr:DoPlayerPropChange()
+    end)
     skynet.error("world service booted")
 end)

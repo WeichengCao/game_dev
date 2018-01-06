@@ -25,6 +25,7 @@ extern "C" {
 #include <stdint.h>
 
 #include "pbc.h"
+#include "proto.h"
 
 static inline void *
 checkuserdata(lua_State *L, int index) {
@@ -868,41 +869,41 @@ _add_rmessage(lua_State *L) {
 	return 0;
 }
 
-//static void
-//_field_by_name_cb(void *p, void *ud) {
-//    lua_State *L = (lua_State*)ud;
-//	struct _field * field = (struct _field *)p;
-//    lua_pushstring(L, field->name);
-//    lua_pushinteger(L, field->id);
-//    lua_rawset(L, -3)
-//}
-//
-//static int
-//_field_by_name(lua_State *L) {
-//	struct pbc_env * env = (struct pbc_env *)checkuserdata(L,1);
-//	const char * type_name = luaL_checkstring(L,2);
-//    lua_newtable(L);
-//    pbc_fields(env, type_name, _field_by_name_cb, (void *)L);
-//    return 1;
-//}
-//
-//static void
-//_field_by_id_cb(void *p, void *ud) {
-//    lua_State *L = (lua_State*)ud;
-//	struct _field * field = (struct _field *)p;
-//    lua_pushinteger(L, field->id);
-//    lua_pushstring(L, field->name);
-//    lua_rawset(L, -3)
-//}
-//
-//static int
-//_field_by_id(lua_State *L) {
-//	struct pbc_env * env = (struct pbc_env *)checkuserdata(L,1);
-//	const char * type_name = luaL_checkstring(L,2);
-//    lua_newtable(L);
-//    pbc_fields(env, type_name, _field_by_id_cb, (void *)L);
-//    return 1;
-//}
+static void
+_field_by_name_cb(void *p, void *ud) {
+    lua_State *L = (lua_State*)ud;
+	struct _field * field = (struct _field *)p;
+    lua_pushstring(L, field->name);
+    lua_pushinteger(L, field->id);
+    lua_rawset(L, -3);
+}
+
+static int
+_field_by_name(lua_State *L) {
+	struct pbc_env * env = (struct pbc_env *)checkuserdata(L,1);
+	const char * type_name = luaL_checkstring(L,2);
+    lua_newtable(L);
+    pbc_fields(env, type_name, _field_by_name_cb, (void *)L);
+    return 1;
+}
+
+static void
+_field_by_id_cb(void *p, void *ud) {
+    lua_State *L = (lua_State*)ud;
+	struct _field * field = (struct _field *)p;
+    lua_pushinteger(L, field->id);
+    lua_pushstring(L, field->name);
+    lua_rawset(L, -3);
+}
+
+static int
+_field_by_id(lua_State *L) {
+	struct pbc_env * env = (struct pbc_env *)checkuserdata(L,1);
+	const char * type_name = luaL_checkstring(L,2);
+    lua_newtable(L);
+    pbc_fields(env, type_name, _field_by_id_cb, (void *)L);
+    return 1;
+}
 
 int
 luaopen_protobuf_c(lua_State *L) {
@@ -936,8 +937,8 @@ luaopen_protobuf_c(lua_State *L) {
 		{"_add_pattern", _add_pattern },
 		{"_add_rmessage", _add_rmessage },
 		{"_env_enum_id", _env_enum_id},
-//        {"_field_by_name", _field_by_name},
-//        {"_field_by_id", _field_by_id},
+        {"_field_by_name", _field_by_name},
+        {"_field_by_id", _field_by_id},
 		{NULL,NULL},
 	};
 

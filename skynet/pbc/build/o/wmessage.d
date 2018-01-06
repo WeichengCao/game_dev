@@ -1,2 +1,2 @@
-build/o/wmessage.o: src/wmessage.c pbc.h src/context.h src/array.h \
- src/varint.h src/alloc.h src/map.h src/proto.h
+build/o/wmessage.o: wmessage.c pbc.h context.h array.h varint.h alloc.h \
+ map.h proto.h

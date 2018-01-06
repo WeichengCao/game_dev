@@ -26,6 +26,11 @@ GS2CDefines.login = {
     GS2CHello = 1001,
     GS2CLoginError = 1002,
 }
+
+GS2CDefines.player = {
+    GS2CLoginFinish = 2000,
+    GS2CRefreshPlayerProp = 2001,
+}
 --GS2CEnd--
 ---------------------
 

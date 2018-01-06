@@ -131,7 +131,7 @@ $(LUA_CLIB_PATH)/debugchannel.so : lualib-src/lua-debugchannel.c | $(LUA_CLIB_PA
 	$(CC) $(CFLAGS) $(SHARED) -Iskynet-src $^ -o $@	
 
 $(LUA_CLIB_PATH)/protobuf.so : pbc/pbc-lua53.c | $(LUA_CLIB_PATH)
-	cd pbc && make clean all && cd - && $(CC) $(CFLAGS) $(SHARED) -Ipbc/src $^ -o $@ -L./pbc/build -lpbc
+	cd pbc && make clean all && cd - && $(CC) $(CFLAGS) $(SHARED) -Ipbc $^ -o $@ -L./pbc/build -lpbc
 
 $(LUA_CLIB_PATH)/ltimer.so : lualib-src/timingwheel/lua-twheel.c lualib-src/timingwheel/twheel.c lualib-src/timingwheel/twheel.h | $(LUA_CLIB_PATH)
 	$(CC) $(CFLAGS) $(SHARED) -Ilualib-src/timingwheel $^ -o $@	

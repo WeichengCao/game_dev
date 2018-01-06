@@ -1,2 +1,2 @@
-build/o/rmessage.o: src/rmessage.c pbc.h src/alloc.h src/map.h \
- src/context.h src/array.h src/varint.h src/proto.h src/pattern.h
+build/o/rmessage.o: rmessage.c pbc.h alloc.h map.h context.h array.h \
+ varint.h proto.h pattern.h

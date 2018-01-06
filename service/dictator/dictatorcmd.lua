@@ -26,3 +26,9 @@ function inter(stdin, print_back)
     --interactive.send(".world", "module", "function", "args")
     interactive.send(".gamedb", "testdb", "SaveInfo2TestDb")
 end
+
+function runtest(stdin, print_back)
+    local skynet = require "skynet"
+    local interactive = require "base.interactive"
+    interactive.send(".world", "common", "RunTest")
+end

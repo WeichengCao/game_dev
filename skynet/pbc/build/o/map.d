@@ -1,1 +1,1 @@
-build/o/map.o: src/map.c src/map.h src/alloc.h
+build/o/map.o: map.c map.h alloc.h

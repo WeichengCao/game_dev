@@ -1,10 +1,40 @@
 local global = require "global"
 local skynet = require "skynet"
+local net = require "base.net"
 local baseobj = import(lualib_path("base.baseobj"))
 local ctrlinit = import(service_path("player.ctrl.init"))
 
 function NewPlayerObj(...)
     return CPlayer:New(...)
+end
+
+PropHelper = {}
+function PropHelper.pid(oPlayer)
+    return oPlayer:GetPid()
+end
+
+function PropHelper.exp(oPlayer)
+    return oPlayer.m_oActiveCtrl:GetExp()
+end
+
+function PropHelper.grade(oPlayer)
+    return oPlayer:GetGrade()
+end
+
+function PropHelper.name(oPlayer)
+    return oPlayer:GetName()
+end
+
+function PropHelper.school(oPlayer)
+    return oPlayer:GetSchool()
+end
+
+function PropHelper.sex(oPlayer)
+    return oPlayer:GetSex()
+end
+
+function PropHelper.icon(oPlayer)
+    return oPlayer:GetIcon()
 end
 
 
@@ -26,7 +56,7 @@ function CPlayer:InitRole(mRole)
     self.m_sAccount = mRole.account
 end
 
-function CPlayer:InitCtrlBlock(iPid)
+function CPlayer:InitCtrlBlock(iPid, mRole)
     self.m_oBaseCtrl = ctrlinit.NewBaseCtrl(iPid, mRole)--基础信息块
     self.m_oActiveCtrl = ctrlinit.NewActiveCtrl(iPid)   --活跃数据库
     self.m_oItemCtrl = ctrlinit.NewItemCtrl(iPid)       --道具信息块
@@ -66,7 +96,9 @@ function CPlayer:Release()
 end
 
 function CPlayer:OnLogin(bReEnter)
-    --safe_call(self.
+    self:RefreshClientProp()
+    --TODO ctrl module OnLogin
+    self:Send("GS2CLoginFinish", {})
 end
 
 function CPlayer:OnLogout()
@@ -100,6 +132,30 @@ function CPlayer:CheckSaveDb()
     self.m_oWeekCtrl:CheckSaveDb()
     self.m_oMonthCtrl:CheckSaveDb()
     self.m_oTempCtrl:CheckSaveDb()
+end
+
+function CPlayer:PropChange(...)
+    local iPid = self:GetPid()
+    for _, sProp in pairs({...}) do
+        global.oWorld:SetPlayerPropChange(iPid, sProp)
+    end
+end
+
+function CPlayer:RefreshClientProp(mProp)
+    local mNet = {}
+    for sKey, _ in pairs(mProp or PropHelper) do
+        if PropHelper[sKey] then
+            mNet[sKey] = PropHelper[sKey](self)
+        else
+            skynet.error("can't find prop " .. sKey)
+        end
+    end
+    mNet = net.Mask("PlayerProp", mNet)
+    self:Send("GS2CRefreshPlayerProp", {prop=mNet})
+end
+
+function CPlayer:GetPid()
+    return self.m_iPid
 end
 
 function CPlayer:GetGrade()

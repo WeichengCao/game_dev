@@ -54,6 +54,9 @@ lualib_path = function(dotfile)
     return "lualib".."."..dotfile
 end
 
+local hook = require "base.hook"
+skynet.set_finish_hook(hook.finish_hook)
+
 require "base.reload"
 require "base.timeop"
 require "base.stringop"
@@ -61,3 +64,4 @@ local netfind = require "base.netfind"
 netfind.Init()
 local savemgr = require "base.savemgr"
 savemgr:Init()
+

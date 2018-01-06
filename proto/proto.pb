@@ -11,6 +11,27 @@
 icon (	Ricon"8
 GS2CSelectRole&
 	role_list (2	.RoleInfoRroleList
+à
+
+base.proto"#
+GS2CSendMessage
+msg (	Rmsg"¬
+
+PlayerProp
+mask (Rmask
+pid (Rpid
+name (	Rname
+exp (Rexp
+grade (Rgrade
+school (Rschool
+sex (Rsex
+icon (Ricon
+n
+server/player.proto
+base.proto"8
+GS2CRefreshPlayerProp
+prop (2.PlayerPropRprop"
+GS2CLoginFinish
 æ
 client/login.proto">
 C2GSLoginAccount
@@ -23,8 +44,3 @@
 C2GSSelectRole
 account (	Raccount
 pid (Rpid
-1
-
-base.proto"#
-GS2CSendMessage
-msg (	Rmsg

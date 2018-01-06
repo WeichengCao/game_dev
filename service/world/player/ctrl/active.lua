@@ -6,7 +6,7 @@ local baseobj = import(lualib_path("base.baseobj"))
 
 CActiveCtrl = {}
 CActiveCtrl.__index = CActiveCtrl
-inherit(CActiveCtrl, baseobj.CActiveCtrl)
+inherit(CActiveCtrl, baseobj.CDataCtrl)
 
 function CActiveCtrl:New(iPid)
     local o = super(CActiveCtrl).New(self)
@@ -42,6 +42,14 @@ function CActiveCtrl:Load(m)
     
     self.m_iExp = m.exp
     self.m_iGrade = m.grade
+end
+
+function CActiveCtrl:GetExp()
+    return self.m_iExp
+end
+
+function CActiveCtrl:GetGrade()
+    return self.m_iGrade
 end
 
 function CActiveCtrl:RewardExp(iAdd, sReason, mArgs)

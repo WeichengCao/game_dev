@@ -1,2 +1,1 @@
-build/o/context.o: src/context.c pbc.h src/alloc.h src/varint.h \
- src/context.h src/array.h
+build/o/context.o: context.c pbc.h alloc.h varint.h context.h array.h

@@ -67,9 +67,23 @@ function M.PackData(sMessage, mData)
 end
 
 function M.Mask(sMessage, mData)
+    --mask 为64位, 但因为lua对于大数的表示是科学记数法，无法完全使用64位
+    --不同版本的lua对大数解析有不同的结果,因此不能完全用满64位,
+    --这里只是提供一种思路，也可以把mask使用string来表示
+    local mNameField = protobuf.name_field(sMessage)
+    assert(mNameField.mask == 1)
+
+    local iMask = 0
+    for sKey, rVal in pairs(mData) do
+        local iNo = mNameField[sKey]
+        iMask = iMask | (1 << (iNo-1))
+    end
+    mData.mask = iMask
+    return mData
 end
 
 function M.UnMask(sMessage, mData)
+    --Mask 的逆过程
 end
 
 function M.Send(mMail, sMessage, mData)

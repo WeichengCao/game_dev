@@ -42,8 +42,8 @@ define BUILD_temp
   LIB_O := $(LIB_O) $$(TAR).o
   $$(TAR).o : | $(BUILD_O)
   -include $$(TAR).d
-  $$(TAR).o : src/$(1)
-	$(CC) $(CFLAGS) -c -Isrc -I. -o $$@ -MMD $$<
+  $$(TAR).o : ./$(1)
+	$(CC) $(CFLAGS) -c -I. -o $$@ -MMD $$<
 endef
 
 $(foreach s,$(LIBSRCS),$(eval $(call BUILD_temp,$(s))))

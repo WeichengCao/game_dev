@@ -5,11 +5,11 @@ local basectrl = import(service_path("player.ctrl.base"))
 local activectrl = import(service_path("player.ctrl.active"))
 
 function NewBaseCtrl(iPid, mRole)
-    return basectrl:New(iPid, mRole)
+    return basectrl.CBaseCtrl:New(iPid, mRole)
 end
 
 function NewActiveCtrl(iPid)
-    return activectrl:New(iPid)
+    return activectrl.CActiveCtrl:New(iPid)
 end
 
 function NewItemCtrl(iPid)

@@ -1,2 +1,2 @@
-build/o/decode.o: src/decode.c pbc.h src/alloc.h src/context.h \
- src/array.h src/varint.h src/proto.h src/map.h
+build/o/decode.o: decode.c pbc.h alloc.h context.h array.h varint.h \
+ proto.h map.h

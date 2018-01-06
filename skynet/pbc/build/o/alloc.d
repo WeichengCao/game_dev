@@ -1,1 +1,1 @@
-build/o/alloc.o: src/alloc.c
+build/o/alloc.o: alloc.c

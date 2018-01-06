@@ -1,3 +1,2 @@
-build/o/proto.o: src/proto.c pbc.h src/proto.h src/map.h src/alloc.h \
- src/array.h src/varint.h src/pattern.h src/context.h src/stringpool.h \
- src/bootstrap.h
+build/o/proto.o: proto.c pbc.h proto.h map.h alloc.h array.h varint.h \
+ pattern.h context.h stringpool.h bootstrap.h

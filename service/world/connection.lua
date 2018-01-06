@@ -1,4 +1,5 @@
 local skynet = require "skynet"
+local net = require "base.net"
 local interactive = require "base.interactive"
 local baseobj = import(lualib_path("base.baseobj"))
 

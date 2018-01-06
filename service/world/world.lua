@@ -19,6 +19,7 @@ function CWorldMgr:New(...)
     o.m_mLoginPlayers = {}      --登陆中的玩家
     o.m_iServerGrade = 0        --服务器等级 
     o.m_iOpenDays = 0           --服务器开放天数
+    o.m_mPlayerPropChange = {}  --帧末刷新玩家属性
     return o
 end
 
@@ -42,7 +43,7 @@ function CWorldMgr:LoginPlayer(iPid, mRole)
         local oConn = self:CreateConnection(mRole)
         global.oConnMgr:AddConnection(iPid, oConn)
 
-        local oPlayer = self:CreatePlayer(iPid)
+        local oPlayer = self:CreatePlayer(iPid, mRole)
         self.m_mLoginPlayers[iPid] = oPlayer
        
         interactive.request(".gamedb", "playerdb", "LoadOnlineCtrl", {pid = iPid},
@@ -63,22 +64,22 @@ end
 
 function CWorldMgr:LoadPlayerCb(iPid, mData)
     local oPlayer = self.m_mLoginPlayers[iPid]
-    assert(oPlayer and oPlayer[sCtrl])
+    assert(oPlayer)
 
     if not mData then return end
 
     local lCtrl2LoadCb = {
         {"m_oBaseCtrl", "basectrl",},
         {"m_oActiveCtrl", "activectrl",},
-        {"m_oItemCtrl", "itemctrl",},
-        {"m_oTaskCtrl", "taskctrl",},
-        {"m_oSummCtrl", "summctrl",},
-        {"m_oSkillCtrl", "skillctrl",},
-        {"m_oWieldCtrl", "wieldctrl",},
-        {"m_oTodayCtrl", "todayctrl",},
-        {"m_oWeekCtrl", "weekctrl",},
-        {"m_oMonthCtrl", "monthctrl",},
-        {"m_oTempCtrl", "tempctrl",},
+--        {"m_oItemCtrl", "itemctrl",},
+--        {"m_oTaskCtrl", "taskctrl",},
+--        {"m_oSummCtrl", "summctrl",},
+--        {"m_oSkillCtrl", "skillctrl",},
+--        {"m_oWieldCtrl", "wieldctrl",},
+--        {"m_oTodayCtrl", "todayctrl",},
+--        {"m_oWeekCtrl", "weekctrl",},
+--        {"m_oMonthCtrl", "monthctrl",},
+--        {"m_oTempCtrl", "tempctrl",},
     }
 
     for _, mInfo in ipairs(lCtrl2LoadCb) do
@@ -101,3 +102,23 @@ function CWorldMgr:LoadPlayerFinish(iPid)
     oPlayer:LoadFinish()
     oPlayer:OnLogin(true)
 end
+
+function CWorldMgr:SetPlayerPropChange(iPid, sProp)
+    if not self.m_mPlayerPropChange[iPid] then
+        self.m_mPlayerPropChange[iPid] = {}
+    end
+    self.m_mPlayerPropChange[iPid][sProp] = 1
+end
+
+function CWorldMgr:DoPlayerPropChange()
+    local mPlayerProp = self.m_mPlayerPropChange
+    self.m_mPlayerPropChange = {}
+
+    for iPid, mProp in pairs(mPlayerProp) do
+        local oPlayer = self:GetOnlinePlayerByPid(iPid)
+        if oPlayer and next(mProp) then
+            safe_call(oPlayer.RefreshClientProp, oPlayer, mProp)
+        end
+    end
+end
+

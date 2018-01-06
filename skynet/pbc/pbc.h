@@ -106,6 +106,7 @@ void pbc_pattern_set_default(struct pbc_pattern * , void *data);
 void pbc_pattern_close_arrays(struct pbc_pattern *, void *data);
 
 int pbc_enum_id(struct pbc_env *env, const char *enum_type, const char *enum_name);
+int pbc_fields(struct pbc_env * p , const char *name, void (*func)(void *p, void *ud), void *ud);
 
 #ifdef __cplusplus
 }

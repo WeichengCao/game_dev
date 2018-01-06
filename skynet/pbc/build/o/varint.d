@@ -1,1 +1,1 @@
-build/o/varint.o: src/varint.c src/varint.h pbc.h
+build/o/varint.o: varint.c varint.h pbc.h
