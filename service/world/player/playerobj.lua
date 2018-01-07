@@ -40,6 +40,7 @@ end
 
 CPlayer = {}
 CPlayer.__index = CPlayer
+CPlayer.m_sClassType = "player"
 inherit(CPlayer, baseobj.CDataCtrl)
 
 function CPlayer:New(iPid, mRole)
@@ -96,8 +97,11 @@ function CPlayer:Release()
 end
 
 function CPlayer:OnLogin(bReEnter)
+    self.m_oBaseCtrl:OnLogin(self, bReEnter)
+    self.m_oActiveCtrl:OnLogin(self, bReEnter)
+    self.m_oItemCtrl:OnLogin(self, bReEnter)
+
     self:RefreshClientProp()
-    --TODO ctrl module OnLogin
     self:Send("GS2CLoginFinish", {})
 end
 

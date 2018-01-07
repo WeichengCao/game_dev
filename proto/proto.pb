@@ -32,6 +32,15 @@ base.proto"8
 GS2CRefreshPlayerProp
 prop (2.PlayerPropRprop"
 GS2CLoginFinish
+­
+server/iteam.proto"_
+ItemUnit
+sid (Rsid
+item_id (RitemId
+amount (Ramount
+pos (Rpos"6
+GS2CItemList&
+	item_list (2	.ItemUnitRitemList
 æ
 client/login.proto">
 C2GSLoginAccount

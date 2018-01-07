@@ -37,9 +37,9 @@
 指令,dictator主要用来实现在线更新,是否开放玩家登陆,关闭存盘等相关指令;每个服务的启动
 都会向该服务注册一份各服务的地址信息，dictator做为一个指令的发起方，将指令根据地址传送
 到各个服务上；根据这个机制可以实现各个服务代码的在线更新，启动这个服务后，我们会监听
-本机器上的dictator_port端口(在config/gs_config.lua中配置)，通过nc localhost dictator_port
+本机器上的dictator_port端口(在config/gs_config.lua中配置)，通过`nc localhost dictator_port`
 可以直连上后台，就可以输入相关的指令进行相关操作，如在线更新指令
-update_code service/world/dictatorobj
+`update_code service/world/dictatorobj`
 
 与此同时，我们还启动了debug_console后台，用于监控各个服务的状态，相应代码位于
 skynet/service/debug_console.lua下；
@@ -126,7 +126,7 @@ git clone https://github.com/google/protobuf.git
 下中我们所需要的文件放入到skynet下的pbc文件夹下，有makefile，src，pbc.h，将pbc/binding下
 的pbc-lua53放到pbc下，然后通过改写skynet/Makefile文件直接进行编译导入,最终，我们的使用方
 式和pbc/binding下介绍的一致,只是我们将protobuff.lua文件放到了game_dev/lualib/base下,这样
-我们就可以直接require "base.protobuf" 使用它
+我们就可以直接`require "base.protobuf"` 使用它
 
 <br> 在这个游戏框架中，我将协议放到了proto/下， proto/base.proto 用于放置各个协议通用数据
 结构，proto/server/x.proto 下放置的是服务端下行协议，统一命名方式是GS2CXXXX， 
@@ -171,7 +171,7 @@ skynet 也支持了对协议处理设置代理，让协议数据的处理转发�
 信息进行完善。玩家完成数据加载等一些列登陆过程后，服务器下行一条登陆完成协议给客户端，客户端
 通过该协议做相应的处理，并建立于服务器的心跳机制。客户端断开socket后，我们不直接卸载玩家对象，
 在内存中保存玩家对象一段时间，时间长短自定义。超过时间未登陆则卸载玩家对象。
-模拟登陆指令：./tools/client.sh -s ./tools/client_script/login.lua -a test_acount
+模拟登陆指令：`./tools/client.sh -s ./tools/client_script/login.lua -a test_acount`
 
 ## 13.玩家模块
 <br> 在这个框架中，我们将玩家的数据分为了在线数据和离线数据；顾名思义，在线数据就是玩家在线

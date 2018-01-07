@@ -54,6 +54,16 @@ lualib_path = function(dotfile)
     return "lualib".."."..dotfile
 end
 
+file_exists = function(file_name, suffix)
+    local path = "service/"..MY_ADDR.."/"..file_name..suffix
+    local fp = io.open(path, "r")
+    if fp then
+        io.close(fp)
+        return true
+    end
+    return false
+end
+
 local hook = require "base.hook"
 skynet.set_finish_hook(hook.finish_hook)
 

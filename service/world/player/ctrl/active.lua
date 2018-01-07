@@ -54,10 +54,11 @@ end
 
 function CActiveCtrl:RewardExp(iAdd, sReason, mArgs)
     assert(iAdd > 0, string.format("exp %s less than 0, %s", iAdd, sReason))
-   
+
+    local oPlayer = global.oWorldMgr:GetOnlinePlayerByPid(self.m_iPid)   
     --TODO log 
     self.m_iExp = self.m_iExp + iAdd
-    --TODO refresh exp
+    oPlayer:PropChange("exp")
 
     if mArgs.tip ~= false then
         local sMsg = mArgs.tip_content or string.format("获得%d经验", iAdd)
@@ -79,12 +80,17 @@ function CActiveCtrl:CheckUpgrade()
         if not iNextExp then break end
     end
 
-    --TODO refresh exp and grade
     self:OnUpgradeEnd(iOldGrade, self.m_iGrade)
+
+    local oPlayer = global.oWorldMgr:GetOnlinePlayerByPid(self.m_iPid)
+    self:PropChange("exp", "grade")
 end
 
 function CActiveCtrl:OnUpgradeEnd(iOldGrade, iNewGrade)
     --TODO trigger event
+end
+
+function CActiveCtrl:OnLogin(oPlayer, bReEnter)
 end
 
 function CActiveCtrl:Notify(iPid, sMsg)
@@ -93,4 +99,5 @@ function CActiveCtrl:Notify(iPid, sMsg)
         oPlayer:Send("GS2CNotify", sMsg)
     end
 end
+
 

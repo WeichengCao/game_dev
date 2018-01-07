@@ -68,3 +68,11 @@ function list_combine(l1, l2)
         l1[#l1+1] = val
     end
 end
+
+function table_count(t)
+    local cnt = 0
+    for k, v in pairs(t) do
+        cnt = cnt + 1
+    end
+    return cnt
+end

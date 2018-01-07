@@ -11,8 +11,8 @@ local C2GSDefines = {}
 
 --C2GSStart--
 C2GSDefines.login = {
-    C2GSSelectRole = 1001,
     C2GSCreateRole = 1000,
+    C2GSSelectRole = 1001,
     C2GSLoginAccount = 1002,
 }
 --C2GSEnd--
@@ -30,6 +30,10 @@ GS2CDefines.login = {
 GS2CDefines.player = {
     GS2CLoginFinish = 2000,
     GS2CRefreshPlayerProp = 2001,
+}
+
+GS2CDefines.iteam = {
+    GS2CItemList = 3000,
 }
 --GS2CEnd--
 ---------------------

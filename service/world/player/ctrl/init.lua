@@ -3,6 +3,7 @@ local global = require "global"
 
 local basectrl = import(service_path("player.ctrl.base"))
 local activectrl = import(service_path("player.ctrl.active"))
+local itemctrl = import(service_path("player.ctrl.item"))
 
 function NewBaseCtrl(iPid, mRole)
     return basectrl.CBaseCtrl:New(iPid, mRole)
@@ -13,6 +14,7 @@ function NewActiveCtrl(iPid)
 end
 
 function NewItemCtrl(iPid)
+    return itemctrl.CItemCtrl:New(iPid)
 end
 
 function NewTaskCtrl(iPid)

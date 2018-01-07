@@ -72,3 +72,6 @@ function CBaseCtrl:GetModel()
     return self.m_mModel
 end
 
+function CBaseCtrl:OnLogin(oPlayer, bReEnter)
+end
+

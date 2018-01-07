@@ -71,7 +71,7 @@ function CWorldMgr:LoadPlayerCb(iPid, mData)
     local lCtrl2LoadCb = {
         {"m_oBaseCtrl", "basectrl",},
         {"m_oActiveCtrl", "activectrl",},
---        {"m_oItemCtrl", "itemctrl",},
+        {"m_oItemCtrl", "itemctrl",},
 --        {"m_oTaskCtrl", "taskctrl",},
 --        {"m_oSummCtrl", "summctrl",},
 --        {"m_oSkillCtrl", "skillctrl",},
