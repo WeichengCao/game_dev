@@ -5,7 +5,7 @@ message GS2CSendMessage {
 }
 
 message PlayerProp {
-    optional uint64 mask = 1;       //标记哪些字段是有更新
+    optional string mask = 1;       //标记哪些字段是有更新
     optional uint32 pid = 2;        //玩家id
     optional string name = 3;       //玩家名字
     optional uint32 exp = 4;        //经验
