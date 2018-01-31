@@ -25,10 +25,7 @@ function LoadOnlineCtrl(mRecord, mData)
         summctrl = 1,
         skillctrl = 1,
         wieldctrl = 1,
-        todayctrl = 1,
-        weekctrl = 1,
-        monthctrl = 1,
-        tempctrl = 1,
+        timectrl = 1,
         name = 1,
     }
     local m = global.oGameDb:FindOne(sTable, mCond, mQuery)

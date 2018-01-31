@@ -69,6 +69,12 @@ function CPlayer:InitCtrlBlock(iPid, mRole)
     self.m_oWeekCtrl = ctrlinit.NewWeekCtrl(iPid)       --周变量
     self.m_oMonthCtrl = ctrlinit.NewMonthCtrl(iPid)     --月变量
     self.m_oTempCtrl = ctrlinit.NewTempCtrl(iPid)       --临时变量，自定义过期时间
+    self.m_oTimeCtrl = ctrlinit.NewTimeCtrl(iPid, {     --时间变量存盘块
+        todayctrl = self.m_oTodayCtrl,
+        weekctrl = self.m_oWeekCtrl,
+        monthctrl = self.m_oMonthCtrl,
+        tempctrl = self.m_oTempCtrl,
+    })
 end
 
 function CPlayer:Release()
@@ -94,6 +100,8 @@ function CPlayer:Release()
     self.m_oMonthCtrl = nil
     self.m_oTempCtrl:Release()
     self.m_oTempCtrl = nil
+    self.m_oTimeCtrl:Release()
+    self.m_oTimeCtrl = nil
 end
 
 function CPlayer:OnLogin(bReEnter)
@@ -132,10 +140,7 @@ function CPlayer:CheckSaveDb()
     self.m_oSummCtrl:CheckSaveDb()
     self.m_oSkillCtrl:CheckSaveDb()
     self.m_oSkillCtrl:CheckSaveDb()
-    self.m_oTodayCtrl:CheckSaveDb()
-    self.m_oWeekCtrl:CheckSaveDb()
-    self.m_oMonthCtrl:CheckSaveDb()
-    self.m_oTempCtrl:CheckSaveDb()
+    self.m_oTimeCtrl:CheckSaveDb()
 end
 
 function CPlayer:PropChange(...)
