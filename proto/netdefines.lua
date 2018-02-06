@@ -11,8 +11,8 @@ local C2GSDefines = {}
 
 --C2GSStart--
 C2GSDefines.login = {
-    C2GSCreateRole = 1000,
     C2GSSelectRole = 1001,
+    C2GSCreateRole = 1000,
     C2GSLoginAccount = 1002,
 }
 --C2GSEnd--

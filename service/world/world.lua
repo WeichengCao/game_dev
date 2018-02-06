@@ -72,14 +72,11 @@ function CWorldMgr:LoadPlayerCb(iPid, mData)
         {"m_oBaseCtrl", "basectrl",},
         {"m_oActiveCtrl", "activectrl",},
         {"m_oItemCtrl", "itemctrl",},
+        {"m_oTimeCtrl", "timectrl",},
 --        {"m_oTaskCtrl", "taskctrl",},
 --        {"m_oSummCtrl", "summctrl",},
 --        {"m_oSkillCtrl", "skillctrl",},
 --        {"m_oWieldCtrl", "wieldctrl",},
---        {"m_oTodayCtrl", "todayctrl",},
---        {"m_oWeekCtrl", "weekctrl",},
---        {"m_oMonthCtrl", "monthctrl",},
---        {"m_oTempCtrl", "tempctrl",},
     }
 
     for _, mInfo in ipairs(lCtrl2LoadCb) do

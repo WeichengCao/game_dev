@@ -3,6 +3,7 @@ local skynet = require "skynet"
 local net = require "base.net"
 local baseobj = import(lualib_path("base.baseobj"))
 local ctrlinit = import(service_path("player.ctrl.init"))
+local attrblock = import(service_path("attrblock"))
 
 function NewPlayerObj(...)
     return CPlayer:New(...)
@@ -37,6 +38,70 @@ function PropHelper.icon(oPlayer)
     return oPlayer:GetIcon()
 end
 
+function PropHelper.hp(oPlayer)
+    return 0
+end
+
+function PropHelper.max_hp(oPlayer)
+    return oPlayer:GetAttr("max_hp")
+end
+
+function PropHelper.mp(oPlayer)
+    return 0
+end
+
+function PropHelper.max_mp(oPlayer)
+    return oPlayer:GetAttr("max_mp")
+end
+
+function PropHelper.phy_attack(oPlayer)
+    return oPlayer:GetAttr("phy_attack")
+end
+
+function PropHelper:phy_defense(oPlayer)
+    return oPlayer:GetAttr("phy_defense")
+end
+
+function PropHelper:mag_attack(oPlayer)
+    return oPlayer:GetAttr("mag_attack")
+end
+
+function PropHelper:mag_defense(oPlayer)
+    return oPlayer:GetAttr("mag_defense")
+end
+
+function PropHelper:cure_power(oPlayer)
+    return oPlayer:GetAttr("cure_power")
+end
+
+function PropHelper:speed(oPlayer)
+    return oPlayer:GetAttr("speed")
+end
+
+function PropHelper:seal_hit_ratio(oPlayer)
+    return oPlayer:GetAttr("seal_hit_ratio")
+end
+
+function PropHelper:res_seal_hit_ratio(oPlayer)
+    return oPlayer:GetAttr("res_seal_hit_ratio")
+end
+
+function PropHelper:phy_critical_ratio(oPlayer)
+    return oPlayer:GetAttr("phy_critical_ratio")
+end
+
+function PropHelper:res_phy_critical_ratio(oPlayer)
+    return oPlayer:GetAttr("res_phy_critical_ratio")
+end
+
+function PropHelper:mag_critical_ratio(oPlayer)
+    return oPlayer:GetAttr("mag_critical_ratio")
+end
+
+function PropHelper:res_mag_critical_ratio(oPlayer)
+    return oPlayer:GetAttr("res_mag_critical_ratio")
+end
+
 
 CPlayer = {}
 CPlayer.__index = CPlayer
@@ -69,6 +134,16 @@ function CPlayer:InitCtrlBlock(iPid, mRole)
     self.m_oWeekCtrl = ctrlinit.NewWeekCtrl(iPid)       --周变量
     self.m_oMonthCtrl = ctrlinit.NewMonthCtrl(iPid)     --月变量
     self.m_oTempCtrl = ctrlinit.NewTempCtrl(iPid)       --临时变量，自定义过期时间
+    self.m_oTimeCtrl = ctrlinit.NewTimeCtrl(iPid, {     --时间变量存盘块
+        todayctrl = self.m_oTodayCtrl,
+        weekctrl = self.m_oWeekCtrl,
+        monthctrl = self.m_oMonthCtrl,
+        tempctrl = self.m_oTempCtrl,
+    })
+
+    self.m_oBaseAttr = attrblock.NewAttrBlock(iPid)     --基础属性
+    self.m_oSkillAttr = attrblock.NewAttrBlock(iPid)    --技能属性
+    self.m_oWieldAttr = attrblock.NewAttrBlock(iPid)    --装备属性
 end
 
 function CPlayer:Release()
@@ -94,6 +169,8 @@ function CPlayer:Release()
     self.m_oMonthCtrl = nil
     self.m_oTempCtrl:Release()
     self.m_oTempCtrl = nil
+    self.m_oTimeCtrl:Release()
+    self.m_oTimeCtrl = nil
 end
 
 function CPlayer:OnLogin(bReEnter)
@@ -132,10 +209,7 @@ function CPlayer:CheckSaveDb()
     self.m_oSummCtrl:CheckSaveDb()
     self.m_oSkillCtrl:CheckSaveDb()
     self.m_oSkillCtrl:CheckSaveDb()
-    self.m_oTodayCtrl:CheckSaveDb()
-    self.m_oWeekCtrl:CheckSaveDb()
-    self.m_oMonthCtrl:CheckSaveDb()
-    self.m_oTempCtrl:CheckSaveDb()
+    self.m_oTimeCtrl:CheckSaveDb()
 end
 
 function CPlayer:PropChange(...)
@@ -184,6 +258,22 @@ end
 
 function CPlayer:GetIcon()
     return self.m_oBaseCtrl:GetIcon()
+end
+
+function CPlayer:GetAttr(sAttr)
+    return self:GetBaseAttr(sAttr) * (1000 + self:GetAttrRatio(sAttr)) / 1000 + self:GetAttrAdd(sAttr)
+end
+
+function CPlayer:GetBaseAttr(sAttr)
+    return self.m_oBaseAttr:GetApply(sAttr)
+end
+
+function CPlayer:GetAttrRatio(sAttr)
+    return self.m_oSkillAttr:GetApplyRatio(sAttr) + self.m_oWieldAttr:GetApplyRatio(sAttr)
+end
+
+function CPlayer:GetAttrAdd(sAttr)
+    return self.m_oSkillAttr:GetApply(sAttr) + self.m_oWieldAttr:GetApply(sAttr)
 end
 
 function CPlayer:Send(sMessage, mData)
