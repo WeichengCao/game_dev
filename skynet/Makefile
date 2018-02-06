@@ -32,7 +32,7 @@ $(JEMALLOC_STATICLIB) : 3rd/jemalloc/Makefile
 	cd 3rd/jemalloc && $(MAKE) CC=$(CC) 
 
 3rd/jemalloc/autogen.sh :
-	git submodule update --init
+	cd .. && git submodule update --init && cd -
 
 3rd/jemalloc/Makefile : | 3rd/jemalloc/autogen.sh
 	cd 3rd/jemalloc && ./autogen.sh --with-jemalloc-prefix=je_ --disable-valgrind
@@ -40,7 +40,7 @@ $(JEMALLOC_STATICLIB) : 3rd/jemalloc/Makefile
 jemalloc : $(MALLOC_STATICLIB)
 
 update3rd :
-	rm -rf 3rd/jemalloc && git submodule update --init
+	rm -rf 3rd/jemalloc && cd .. && git submodule update --init && cd -
 
 # skynet
 
