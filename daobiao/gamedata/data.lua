@@ -23,4 +23,19 @@ return {
             max_amount = 99,
         },
     },
+    skill = {
+        [1001] = {
+            skill_id = 1001,
+            skill_name = "万剑归一",
+            belong = "positive",
+            perform_id = 1001,
+        },
+        [1002] = {
+            skill_id = 1001,
+            skill_name = "强身",
+            belong = "passive",
+            skill_effect = {phy_attack="10", max_hp="100*lv"},
+            skill_effect_ratio = {}
+        },
+    },
 }

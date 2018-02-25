@@ -11,6 +11,7 @@ local netcmd = import(service_path("netcmd.init"))
 local world = import(service_path("world"))
 local connection = import(service_path("connection"))
 local itemmgr = import(service_path("item.itemmgr"))
+local skillmgr = import(service_path("skill.skillmgr"))
 
 skynet.start(function()
     interactive.dispatch_logic(logiccmd)
@@ -20,6 +21,7 @@ skynet.start(function()
     global.oConnMgr = connection:NewConnectionMgr()
     global.oWorldMgr = world.NewWorldMgr()
     global.oItemMgr = itemmgr.NewItemMgr()
+    global.oSkillMgr = skillmgr.NewSkillMgr()
 
     skynet.register(".world")
 
