@@ -70,3 +70,50 @@ function CWarMgr:GetWar(iWar)
     return self.m_mWars[iWar]
 end
 
+function CWarMgr:PrepareWar(iWar, mPrepare)
+    local oWar = self:GetWar(iWar)
+    assert(oWar)
+    oWar:PrepareWar(mPrepare)
+end
+
+function CWarMgr:AfterInitAllWarrior(iWar, mInfo)
+    local oWar = self:GetWar(iWar)
+    assert(oWar)
+    oWar:AfterInitAllWarrior(mInfo)
+end
+
+function CWarMgr:WarStart(iWar)
+    local oWar = self:GetWar(iWar)
+    assert(oWar)
+    oWar:WarStart()
+end
+
+function CWarMgr:EnterPlayer(iWar, iCamp, oPlayer)
+    local oWar = self:GetWar(iWar)
+    assert(oWar)
+
+    local mCamp = oWar:PackWarCamp(iCamp, oPlayer)
+    oWar:PrepareCamp(iCamp, mCamp)
+   
+    local mPlayer = nil 
+    if oWar.PackPlayerInfo then
+        mPlayer = oWar:PackPlayerInfo(oPlayer)
+    else
+        mPlayer = oPlayer:PackWarInfo(oWar)
+    end
+   
+    --TODO 携带召唤兽
+    local mSummInfo = {
+        mCurrSumm = nil,            --当前出战
+        mKeepSumm = nil,            --宠物栏中
+    }
+    oWar:AddPlayer(iCamp, oPlayer, mPlayer, mSummInfo)
+end
+
+function CWarMgr:AddWarriorList(iWar, iCamp, lWarrior)
+    local oWar = self:GetWar(iWar)
+    assert(oWar)
+
+    oWar:AddWarriorList(iCamp, lWarrior)
+end
+
