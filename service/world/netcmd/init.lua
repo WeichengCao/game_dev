@@ -2,6 +2,7 @@ local M = {}
 
 --M.test = import(service_path("netcmd.test"))
 M.item = import(service_path("netcmd.item"))
+M.war = import(service_path("netcmd.war"))
 
 function M.Invoke(sMod, sMsg, fd, mData)
     if not M[sMod] then

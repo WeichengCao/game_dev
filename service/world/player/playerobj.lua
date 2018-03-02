@@ -289,6 +289,14 @@ function CPlayer:PackWarInfo(oWar)
     return mWar
 end
 
+function CPlayer:KeepOnlineForever()
+    --TODO
+end
+
+function CPlayer:CancelOnlineForever()
+    --TODO
+end
+
 function CPlayer:Send(sMessage, mData)
     local oConn = global.oConnMgr:GetConnectionByPid(self.m_iPid)
     if oConn then

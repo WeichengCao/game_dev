@@ -15,6 +15,8 @@ function CWarrior:New(iWid, iWar)
     o.m_iType = nil                 --战斗单位类型
     o.m_iCamp = nil                 --阵营
     o.m_oPerformMgr = nil           --招式管理器
+    o.m_oBuffMgr = nil              --buff管理器
+    o.m_mFunc = {}                  --hook函数容器
     return o
 end
 
@@ -62,7 +64,33 @@ function CWarrior:IsAlive()
     return self:GetInfo("hp", 0) > 0
 end
 
+function CWarrior:IsDead()
+    return self:GetInfo("hp", 0) <= 0
+end
+
 function CWarrior:AddHp(iAdd)
+end
+
+function CWarrior:SubHp(iSub, mArgs)
+    local iHp = self:GetInfo("hp", 0)
+    iHp = math.max(0, iHp - iSub)
+    self:SetInfo("hp", iHp)
+
+    oWarrior:RefreshClientProp({hp=1}, true)
+
+    local lFunc = self:GetFunc("OnSubHp")
+    for _, func in ipairs(lFunc) do
+        safe_call(func, self, mArgs)
+    end
+
+    if self:IsDead() then
+        local lFunc = self:GetFunc("OnDead")
+        for _, func in ipairs(lFunc) do
+            safe_call(func, self, mArgs)
+        end
+
+        --TODO kickout
+    end
 end
 
 function CWarrior:AddMp(iAdd)
@@ -92,4 +120,26 @@ function CWarrior:GetSpeed(sCmd, mData)
     return 100
 end
 
+function CWarrior:GetPerform(iPerform)
+    return self.m_oPerformMgr:GetPerform(iPerform)
+end
+
+function CWarrior:AddFunc(sKey, iNo, func)
+    if not self.m_mFunc[sKey] then
+        self.m_mFunc[sKey] = {}
+    end
+    self.m_mFunc[sKey][iNo] = func
+end
+
+function CWarrior:GetFunc(sKey)
+    return self.m_mFunc[sKey]
+end
+
+function CWarrior:GetFriendList(bAll)
+    return {}
+end
+
+function CWarrior:GetEnemyList(bAll)
+    return {}
+end
 

@@ -67,3 +67,8 @@ function CCamp:AddWarrior(oWarrior)
     oWarrior:SetCamp(self.m_iCamp)
 end
 
+function CCamp:LeaveWarrior(oWarrior)
+    local iPos = oWarrior:GetPos()
+    self.m_mPos2Wid[iPos] = nil
+end
+

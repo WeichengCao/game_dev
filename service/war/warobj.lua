@@ -299,6 +299,7 @@ function CWar:BoutExecute()
     end
     table.sort(lExecuteList, sort_func)
 
+    local oActionMgr = global.oActionMgr
     local iLen = #lExecuteList
     while iLen > 0 do
         local iWid, iSpeed = table.unpack(lExecuteList[iLen])
@@ -314,7 +315,9 @@ function CWar:BoutExecute()
             local sCmd = mCmd.cmd
             local mData = mCmd.data
             if sCmd == "skill" then
-                --TODO
+                safe_call(oActionMgr.WarSkill, oActionMgr, oWarrior, mData)
+            elseif sCmd == "normal_attack" then
+                safe_call(oActionMgr.WarNormalAttack, oActionMgr, oWarrior, mData)
             end
             table.remove(lExecuteList, iLen)
         end
@@ -352,6 +355,62 @@ function CWar:WarEnd(bForce)
     if self.m_bWarEnd then return end
 
     self.m_bWarEnd = true
+
+    local mNet = {
+        result = self.m_iWarResult,
+        war_id = self.m_iWarId,
+    }
+    self:BroadCast("GS2CWarEnd", mNet)
+
+    local mWarEnd = self:PackWarEndInfo(bForce)
+
+    for iPid, iWid in pairs(self.m_mPid2Wid) do
+        local oWarrior = self:GetWarrior(iWid)
+        if oWarrior then
+            self:LeavePlayer(oWarrior)
+            self:LeaveSummon(oWarrior)
+        end
+    end
+
+    local mArgs = {
+        war_id = self.m_iWarId,
+        war_end = mWarEnd,
+    }
+    interactive.send(".world", "war", "RemoteWarEnd", mArgs)
+end
+
+function CWar:LeavePlayer(oWarrior, bEscape)
+    --TODO sync to client
+    local iPid = oWarrior:GetPid()
+    local iWid = oWarrior:GetWid()
+    if not self.m_mWarrior[iWid] then
+       return
+    end
+
+    self.m_mWarrior[iWid] = nil
+    self.m_mPid2Wid[iPid] = nil
+    self.m_mPid2Camp[iPid] = nil
+    local iCamp = oWarrior:GetCamp()
+    local oCamp = oWar:GetCampObj(iCamp)
+    oCamp:LeaveWarrior(oWarrior)
+
+    local mNet = {
+        war_id = self.m_iWarId,
+        wid = iWid,
+        war_end = self.m_bWarEnd and 1 or 0,
+    }
+    self:BroadCast("GS2CWarDelWarrior", mNet)
+
+    local mArgs = {
+        war_id = self.m_iWarId,
+        pid = iPid,
+        escape = bEscape,
+    }
+    interactive.send(".world", "war", "RemoteLeavePlayer", mArgs)
+end
+
+function CWar:LeaveSummon(oWarrior)
+    --TODO self:BroadCast("GS2CWarDelWarrior", mNet)
 end
 
 function CWar:AddOperatorTime(iAdd)

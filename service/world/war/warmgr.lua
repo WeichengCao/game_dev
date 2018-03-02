@@ -117,3 +117,32 @@ function CWarMgr:AddWarriorList(iWar, iCamp, lWarrior)
     oWar:AddWarriorList(iCamp, lWarrior)
 end
 
+function CWarMgr:WarEnd(iWarId, mWarEnd)
+    local oWar = self:GetWar(iWar)
+    assert(oWar)
+
+    oWar:WarEnd(mWarEnd)
+    self:RemoveWar(iWar)
+end
+
+function CWarMgr:RemoteLeavePlayer(iWarId, iPid, bEscape)
+    local oWar = self:GetWar(iWar)
+    if not oWar then return end
+   
+    oWar:RemoteLeavePlayer(iPid, bEscape) 
+end
+
+function CWarMgr:WarSkill(iWarId, iPid, mData)
+    local oWar = self:GetWar(iWar)
+    if not oWar then return end
+
+    oWar:Forward("C2GSWarSkill", iPid, mData)
+end
+
+function CWarMgr:WarNormalAttack(iWarId, iPid, mData)
+    local oWar = self:GetWar(iWar)
+    if not oWar then return end
+
+    oWar:Forward("C2GSWarNormalAttack", iPid, mData)
+end
+
