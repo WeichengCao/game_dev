@@ -19,3 +19,11 @@ WAR_STATUS = {
     ANIMATION = 2，         --动画播放
 }
 
+PERFORM_TARGET_TYPE = {
+    FRIEND = 1,
+    ENEMY = 2,
+}
+
+PERFORM_TYPE = {
+    PHY_ATTACK = 1,
+}

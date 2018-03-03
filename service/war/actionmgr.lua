@@ -66,13 +66,23 @@ function CActionMgr:TryWarNormalAttack(oAttack, oVictim , mArgs)
     for _, func in ipairs(lFunc) do
         safe_call(func, oVictim, oAttack, mArgs)
     end
+
+    self:WarriorGoBack(oAttack)
+end
+
+function CActionMgr:CalNormalAttackHit(oAttack, oVictim, mArgs)
+    return true
+end
+
+function CActionMgr:CalNormalAttackDamage(oAttack, oVictim, mArgs)
+    return 100
 end
 
 function CActionMgr:ReceiveDamage(oVictim, iDamage, mArgs)
     oVictim:SubHp(iDamage, mArgs)
 end
 
-function CActionMgr:WarGoBack(oWarrior)
+function CActionMgr:WarriorGoBack(oWarrior)
     local oWar = oAttack:GetWarObj()
     assert(oWar)
 
@@ -84,3 +94,7 @@ function CActionMgr:WarGoBack(oWarrior)
     }
     oWar:BroadCast("GS2CWarGoBack", mNet)
 end
+
+function CActionMgr:TryPhyAttack(oAttack, oVictim, mArgs)
+end
+
