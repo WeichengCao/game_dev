@@ -1,5 +1,4 @@
 local skynet = require "skynet"
-local ltimer = require 'ltimer'
 
 CTimer = {}
 CTimer.__index = CTimer

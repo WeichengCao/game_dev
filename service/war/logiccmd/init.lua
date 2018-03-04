@@ -1,8 +1,6 @@
 
 local mCmd = {}
 
-mCmd.login = import(service_path("logiccmd.login"))
-mCmd.common = import(service_path("logiccmd.common"))
 mCmd.war = import(service_path("logiccmd.war"))
 
 

@@ -276,6 +276,27 @@ function CPlayer:GetAttrAdd(sAttr)
     return self.m_oSkillAttr:GetApply(sAttr) + self.m_oWieldAttr:GetApply(sAttr)
 end
 
+function CPlayer:PackWarInfo(oWar)
+    local mWar = {}
+    mWar.mail_addr = self:MailAddr()
+    mWar.pid = self:GetPid()
+    mWar.grade = self:GetGrade()
+    mWar.name = self:GetName()
+    mWar.school = self:GetSchool()
+    mWar.max_hp = self:GetAttr("max_hp")
+    mWar.max_mp = self:GetAttr("max_mp")
+    
+    return mWar
+end
+
+function CPlayer:KeepOnlineForever()
+    --TODO
+end
+
+function CPlayer:CancelOnlineForever()
+    --TODO
+end
+
 function CPlayer:Send(sMessage, mData)
     local oConn = global.oConnMgr:GetConnectionByPid(self.m_iPid)
     if oConn then
@@ -283,3 +304,9 @@ function CPlayer:Send(sMessage, mData)
     end
 end
 
+function CPlayer:MailAddr()
+    local oConn = global.oConnMgr:GetConnectionByPid(self.m_iPid)
+    if oConn then
+        return oConn:MailAddr()
+    end
+end
