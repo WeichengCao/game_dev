@@ -16,7 +16,7 @@ WARRIOR_TYPE = {
 
 WAR_STATUS = {
     OPERATOR = 1,           --操作时间，播放倒计时
-    ANIMATION = 2，         --动画播放
+    ANIMATION = 2,         --动画播放
 }
 
 PERFORM_TARGET_TYPE = {
